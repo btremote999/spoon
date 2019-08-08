@@ -505,8 +505,15 @@ public final class SpoonDeviceRunner {
 
   private void adbPull(IDevice device, FileEntry remoteDirName, String localDirName) {
     try {
-      device.getSyncService().pull(new FileEntry[]{remoteDirName}, localDirName,
-          getNullProgressMonitor());
+      ProcessBuilder pb = new ProcessBuilder(
+              "adb",
+              "-s",
+              device.getSerialNumber(),
+              "pull",
+              remoteDirName.getFullPath(),
+              localDirName);
+      Process pc = pb.start();
+      pc.waitFor();
     } catch (Exception e) {
       logDebug(debug, e.getMessage(), e);
     }
